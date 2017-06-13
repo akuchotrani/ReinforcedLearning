@@ -18,7 +18,6 @@
 #   can you reach your maximum potential?
 
 import numpy as np
-import matplotlib.pyplot as plt
 
 LENGTH = 3
 
@@ -86,15 +85,15 @@ class Agent:
           for j in range(LENGTH):
             if env.is_empty(i, j):
               # print the value
-              print ("%.2f|") % pos2value[(i,j)],
+              print ("%.2f|" % pos2value[(i,j)], end = " "),
             else:
-              print (" "),
+              print (" ", end = ""),
               if env.board[i,j] == env.x:
-                print ("x |"),
+                print ("x |", end = ""),
               elif env.board[i,j] == env.o:
-                print ("o |"),
+                print ("o |", end = ""),
               else:
-                print ("  |"),
+                print ("  |", end = ""),
           print ("")
         print ("-----------------")
 
@@ -229,13 +228,13 @@ class Environment:
     for i in range(LENGTH):
       print ("-------------")
       for j in range(LENGTH):
-        print (" "),
+        print (" ",end = " "),
         if self.board[i,j] == self.x:
-          print ("x"),
+          print ("x", end = ""),
         elif self.board[i,j] == self.o:
-          print ("o"),
+          print ("o", end = ""),
         else:
-          print (" "),
+          print (" ", end = ""),
       print ("")
     print ("-------------")
 
