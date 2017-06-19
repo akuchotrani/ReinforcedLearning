@@ -23,7 +23,7 @@ class Agent:
   def __init__(self, eps=0.1, alpha=0.5):
     self.eps = eps # probability of choosing random action instead of greedy
     self.alpha = alpha # learning rate
-    self.verbose = False
+    self.verbose = True
     self.state_history = []
   
   def setV(self, V):
@@ -427,10 +427,7 @@ if __name__ == '__main__':
   human.set_symbol(env.o)
   while True:
     p1.set_verbose(True)
-    play_game(p1, human, Environment(), draw=2)
-    # I made the agent player 1 because I wanted to see if it would
-    # select the center as its starting move. If you want the agent
-    # to go second you can switch the human and AI.
+    play_game(p1,human, Environment(), draw=2)
     answer = input("Play again? [Y/n]: ")
     if answer and answer.lower()[0] == 'n':
       break
