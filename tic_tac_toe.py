@@ -23,7 +23,7 @@ class Agent:
   def __init__(self, eps=0.1, alpha=0.5):
     self.eps = eps # probability of choosing random action instead of greedy
     self.alpha = alpha # learning rate
-    self.verbose = True
+    self.verbose = False
     self.state_history = []
   
   def setV(self, V):
