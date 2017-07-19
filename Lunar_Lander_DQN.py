@@ -10,6 +10,41 @@ import numpy as np
 import tensorflow as tf
 
 
+class DQN:
+    
+    def __init__(self,state_dim,action_dim):
+        self.stateDimension = state_dim
+        self.actionDimension = action_dim
+        self.Neurons_Layer_1 = 128
+        self.Neurons_Layer_2 = 256
+        self.Neurons_Layer_3 = 512
+        
+        self.Create_Neural_Network()
+        
+    
+    def Create_Neural_Network(self):
+        self.state_input = tf.placeholder(tf.float32,[None,self.state_dim], name = 'state_inputs')
+        
+        self.W1 = tf.get_variable("W1",[self.stateDimension,self.Neurons_Layer_1])
+        self.b1 = tf.get_variable(tf.constant(0.01,shape = [self.Neurons_Layer_1, ]))
+        layer1 = tf.nn.relu(tf.matmul(self.state_input,self.W1) + self.b1)
+        
+        self.W2 = tf.get_variable("W2",[self.Neurons_Layer_1,self.Neurons_Layer_2])
+        self.b2 = tf.get_variable(tf.constant(0.01,shape = [self.Neurons_Layer_2, ]))
+        layer2 = tf.nn.relu(tf.matmul(layer1,self.W2) + self.b2)
+        
+        self.W3 = tf.get_variable("W3",[self.Neurons_Layer_2,self.Neurons_Layer_3])
+        self.b3 = tf.get_variable(tf.constant(0.01,shape = [self.Neurons_Layer_3, ]))
+        layer3 = tf.nn.relu(tf.matmul(layer2,self.W3) + self.b3)
+        
+        
+        self.W4 = tf.get_variable("W4",[self.Neurons_Layer_3,self.actionDimension])
+        self.b4 = tf.get_variable(tf.constant(0.01,shape = [self.actionDimension, ]))
+        self.Q_value = tf.matmul(layer3,self.W4) + self.b4
+        
+        
+
+
 '''
 class Agent:
     
@@ -27,6 +62,7 @@ class Environment:
         
      def run_random_action(self):
         for i_episode in range(10):
+            self.env.reset()
             reward = 0
             for t in range(100):
                 self.env.render()
@@ -43,7 +79,8 @@ def main():
     env = Environment("LunarLander-v2")
     stateCnt  = env.env.observation_space.shape[0]
     actionCnt = env.env.action_space.n
-   # env.closeEnvironment()
+    env.run_random_action()
+    env.closeEnvironment()
     
     
     
