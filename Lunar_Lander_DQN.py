@@ -8,10 +8,14 @@ Created on Wed Jul 19 14:30:38 2017
 import gym
 import numpy as np
 import tensorflow as tf
-
+from collections import deque
+import random
 
 REPLAY_SIZE = 100000
 BATCH_SIZE = 512
+GAMMA = 0.99
+INITIAL_EPSILON = 1
+
 
 class DQN:
     
@@ -26,6 +30,7 @@ class DQN:
         
         self.replay_buffer = deque()
         
+        self.epsilon = INITIAL_EPSILON
     
     def Create_Neural_Network(self):
         self.state_input = tf.placeholder(tf.float32,[None,self.state_dim], name = 'state_inputs')
@@ -70,6 +75,30 @@ class DQN:
         
     
     def Train_Network(self):
+        randomBatch = random.sample(self.replay_buffer,BATCH_SIZE)
+        state_batch = [data[0] for data in randomBatch]
+        action_batch = [data[1] for data in randomBatch]
+        reward_batch = [data[2] for data in randomBatch]
+        next_state_batch = [data[3] for data in randomBatch]
+        
+        y_batch = []
+        Q_value_batch = self.Q_value.eval(feed_dict = {self.state_input:next_state_batch})
+        
+        
+        for i in range(0,BATCH_SIZE):
+            done = randomBatch[i][4]
+            
+            if done:
+                y_batch.append(reward_batch[i])
+            else:
+                y_batch.append(reward_batch[i] + GAMMA* np.max(Q_value_batch[i]))
+            
+            feed_dict = {self.y_input: y_batch,
+                         self.action_input:action_batch,
+                         self.state_input: state_batch}
+            
+            self.session.run(self.optimizer,feed_dict)
+            
         
         
         
