@@ -15,6 +15,7 @@ REPLAY_SIZE = 100000
 BATCH_SIZE = 512
 GAMMA = 0.99
 INITIAL_EPSILON = 1
+DECAY_RATE = 0.975
 
 
 class DQN:
@@ -98,6 +99,44 @@ class DQN:
                          self.state_input: state_batch}
             
             self.session.run(self.optimizer,feed_dict)
+            
+            
+            
+        def explore_action(self,state):
+            
+            Q_value = self.Q_value.eval(feed_dict = {self.state_input:[state]})[0]
+            
+            if self.epsilon > 0.1:
+                self.epsilon = self.epsilon - 0.001
+            else:
+                self.epsilon *= DECAY_RATE
+                
+                
+            if random.random() <= self.epsilon:
+                return random.randint(0,self.action_dim -1)
+            else:
+                return np.argmax(Q_value)
+            
+        
+        def action(self,state):
+            return np.argmax(self.Q_value.eval(feed_dict = {self.state_input:[state]})[0])
+        
+        
+        def store_data(self,state,action,reward,next_state,done):
+            one_hot_action_array = np.zeros(self.actionDimension)
+            one_hot_action_array[action] = 1
+            self.replay_buffer.append((state,one_hot_action_array,reward,next_state,done))
+        
+            #taking care of data overflow
+            if len(self.replay_buffer) > REPLAY_SIZE:
+                self.replay_buffer.popleft()
+                
+        
+        def save_network(self,path):
+            self.saver.save(self.session,path + '/my_lunar_lander_model.ckpt')
+            
+            
+            
             
         
         
